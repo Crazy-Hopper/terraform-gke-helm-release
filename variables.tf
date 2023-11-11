@@ -42,3 +42,19 @@ variable "repository" {
   description = "Helm repository"
   type        = string
 }
+
+variable "google_project" {
+  type = string
+}
+
+variable "google_region" {
+  type = string
+}
+
+variable "cluster_endpoint" {
+  type = string
+}
+
+variable "cluster_ca_certificate" {
+  type = string
+}
