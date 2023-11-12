@@ -51,8 +51,13 @@ resource "helm_release" "this" {
     }
   }
 
-  postrender {
-    binary_path = lookup(var.app, "postrender_binary", null)
-    args        = lookup(var.app, "postrender_args", null)
+  dynamic "postrender" {
+    iterator = item
+    for_each = var.postrender == null ? [] : var.postrender
+
+    content {
+      binary_path = item.value.binary_path
+      args        = item.value.args
+    }
   }
 }

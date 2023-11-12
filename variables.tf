@@ -43,6 +43,15 @@ variable "repository" {
   type        = string
 }
 
+variable "postrender" {
+  description = "Postrender to apply to generated template"
+  type        = object({
+    binary_path = string
+    args        = optional(list(string))
+  })
+  default = null
+}
+
 variable "google_project" {
   type = string
 }
