@@ -53,7 +53,7 @@ resource "helm_release" "this" {
 
   dynamic "postrender" {
     iterator = item
-    for_each = var.postrender == null ? [] : var.postrender
+    for_each = var.postrender == null ? [] : [var.postrender]
 
     content {
       binary_path = item.value.binary_path
