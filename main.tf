@@ -10,7 +10,8 @@ resource "helm_release" "this" {
   name                       = var.app["name"]
   version                    = var.app["version"]
   chart                      = var.app["chart"]
-  force_update               = lookup(var.app, "force_update", true)
+  force_update               = lookup(var.app, "force_update", false)
+  description                = lookup(var.app, "description", null)
   wait                       = lookup(var.app, "wait", true)
   recreate_pods              = lookup(var.app, "recreate_pods", true)
   max_history                = lookup(var.app, "max_history", 0)
@@ -29,27 +30,11 @@ resource "helm_release" "this" {
   dependency_update          = lookup(var.app, "dependency_update", false)
   replace                    = lookup(var.app, "replace", false)
   timeout                    = lookup(var.app, "timeout", 300)
+  upgrade_install            = lookup(var.app, "upgrade_install", false)
   values                     = var.values
 
-  dynamic "set" {
-    iterator = item
-    for_each = var.set == null ? [] : var.set
-
-    content {
-      name  = item.value.name
-      value = item.value.value
-    }
-  }
-
-  dynamic "set_sensitive" {
-    iterator = item
-    for_each = var.set_sensitive == null ? [] : var.set_sensitive
-
-    content {
-      name  = item.value.path
-      value = item.value.value
-    }
-  }
+  set = [for item in coalesce(var.set, []): { "name": item.name, "value": item.value}]
+  set_sensitive = [for item in coalesce(var.set_sensitive, []): { "name": item.path, "value": item.value}]
 
   dynamic "postrender" {
     iterator = item
