@@ -30,19 +30,9 @@ resource "helm_release" "this" {
   dependency_update          = lookup(var.app, "dependency_update", false)
   replace                    = lookup(var.app, "replace", false)
   timeout                    = lookup(var.app, "timeout", 300)
-  upgrade_install            = lookup(var.app, "upgrade_install", false)
   values                     = var.values
+  postrender                 = var.postrender
 
   set = [for item in coalesce(var.set, []): { "name": item.name, "value": item.value}]
   set_sensitive = [for item in coalesce(var.set_sensitive, []): { "name": item.path, "value": item.value}]
-
-  dynamic "postrender" {
-    iterator = item
-    for_each = var.postrender == null ? [] : [var.postrender]
-
-    content {
-      binary_path = item.value.binary_path
-      args        = item.value.args
-    }
-  }
 }
